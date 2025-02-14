@@ -1,7 +1,7 @@
 "use client";
-
 import Link from "next/link";
 import { useState } from "react";
+import axios, { AxiosError } from "axios";
 
 export default function SignUpComp() {
   const [fullName, setFullName] = useState("");
@@ -9,6 +9,61 @@ export default function SignUpComp() {
   const [password, setPassword] = useState("");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // State to store any error message
+  const [successMessage, setSuccessMessage] = useState(""); // State to store success message
+  const [loading, setLoading] = useState(false); // State to track the loading status
+
+  // Form submission handler with proper type for event `e`
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent page reload
+
+    const userData = {
+      fullName,
+      email,
+      password,
+      city,
+      country,
+    };
+
+    setLoading(true); // Start loading
+
+    try {
+      // Send a POST request to your API route
+      const response = await axios.post(
+        "http://localhost:4000/auth/register",
+        userData
+      ); // Adjust your API URL as needed
+      // Success - Handle the response
+      setSuccessMessage(response.data.message);
+      setErrorMessage(""); // Clear error message if successful
+
+      // Clear the form fields after successful submission
+      setFullName("");
+      setEmail("");
+      setPassword("");
+      setCity("");
+      setCountry("");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        // Now TypeScript knows that the error is an AxiosError
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setErrorMessage(error.response.data.message); // Handle specific API error message
+        } else {
+          setErrorMessage("Something went wrong. Please try again.");
+        }
+      } else {
+        // If it's not an AxiosError, you can handle it as a generic error
+        setErrorMessage("An unexpected error occurred. Please try again.");
+      }
+      setSuccessMessage(""); // Clear success message if there's an error
+    } finally {
+      setLoading(false); // End loading
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
@@ -16,8 +71,20 @@ export default function SignUpComp() {
         {/* Title */}
         <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
 
+        {/* Success or Error Message */}
+        {successMessage && (
+          <div className="bg-green-500 text-white p-3 rounded mb-4">
+            {successMessage}
+          </div>
+        )}
+        {errorMessage && (
+          <div className="bg-red-500 text-white p-3 rounded mb-4">
+            {errorMessage}
+          </div>
+        )}
+
         {/* Form */}
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Full Name */}
           <div>
             <label htmlFor="fullName" className="block text-sm font-medium">
@@ -91,9 +158,18 @@ export default function SignUpComp() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition"
+            disabled={loading} // Disable button while loading
+            className={`w-full ${
+              loading ? "bg-gray-500" : "bg-blue-600 hover:bg-blue-700"
+            } text-white font-bold py-2 px-4 rounded-md transition`}
           >
-            Sign Up
+            {loading ? (
+              <div className="flex justify-center">
+                <div className="w-6 h-6 border-4 border-t-transparent border-blue-500 rounded-full animate-spin" />
+              </div>
+            ) : (
+              "Sign Up"
+            )}
           </button>
 
           {/* Sign In Link */}
