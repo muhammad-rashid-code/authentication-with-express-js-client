@@ -98,7 +98,7 @@ export default function SignUpComp() {
 
           {/* Sign In Link */}
           <p className="text-sm text-center mt-4">
-            Already have an account?{" "}
+            Already have an account?
             <Link href="sign-in" className="text-blue-400 hover:underline">
               Sign in here
             </Link>

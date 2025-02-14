@@ -15,13 +15,13 @@ export default function RootPage() {
         {/* Authentication Links */}
         <div className="space-y-3">
           <p>
-            <span className="text-gray-400">Sign in</span>{" "}
+            <span className="text-gray-400">Sign in</span>
             <Link href="sign-in" className="text-blue-400 hover:underline">
               Here
             </Link>
           </p>
           <p>
-            <span className="text-gray-400">Sign up</span>{" "}
+            <span className="text-gray-400">Sign up</span>
             <Link href="sign-up" className="text-blue-400 hover:underline">
               Here
             </Link>
