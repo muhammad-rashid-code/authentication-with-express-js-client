@@ -30,7 +30,7 @@ export default function SignUpComp() {
     try {
       // Send a POST request to your API route
       const response = await axios.post(
-        "http://localhost:4000/auth/register",
+        "https://authentication-with-express-js-server.vercel.app/auth/register",
         userData
       ); // Adjust your API URL as needed
       // Success - Handle the response
@@ -159,9 +159,8 @@ export default function SignUpComp() {
           <button
             type="submit"
             disabled={loading} // Disable button while loading
-            className={`w-full ${
-              loading ? "bg-gray-500" : "bg-blue-600 hover:bg-blue-700"
-            } text-white font-bold py-2 px-4 rounded-md transition`}
+            className={`w-full ${loading ? "bg-gray-500" : "bg-blue-600 hover:bg-blue-700"
+              } text-white font-bold py-2 px-4 rounded-md transition`}
           >
             {loading ? (
               <div className="flex justify-center">
