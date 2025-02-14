@@ -159,8 +159,9 @@ export default function SignUpComp() {
           <button
             type="submit"
             disabled={loading} // Disable button while loading
-            className={`w-full ${loading ? "bg-gray-500" : "bg-blue-600 hover:bg-blue-700"
-              } text-white font-bold py-2 px-4 rounded-md transition`}
+            className={`w-full ${
+              loading ? "bg-gray-500" : "bg-blue-600 hover:bg-blue-700"
+            } text-white font-bold py-2 px-4 rounded-md transition`}
           >
             {loading ? (
               <div className="flex justify-center">
