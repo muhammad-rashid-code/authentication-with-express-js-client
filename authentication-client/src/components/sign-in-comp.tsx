@@ -6,6 +6,58 @@ import { useState } from "react";
 export default function SigninComp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // To hold error messages
+  const [loading, setLoading] = useState(false); // To handle loading state
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setError(""); // Reset the error on each submit
+    setLoading(true); // Start loading
+
+    // Basic client-side validation
+    if (!email || !password) {
+      const errorMessage = "Email and password are required.";
+      setError(errorMessage);
+      console.error("Client Error:", errorMessage);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "https://authentication-with-express-js-server.vercel.app/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Server error handling
+        setError(data.message || "Something went wrong on the server.");
+        console.error("Server Error:", data.message);
+      } else {
+        // Success handling
+        console.log("Login successful:", data);
+        // Clear the input fields after successful login
+        setEmail("");
+        setPassword("");
+        // Handle successful login (store token, redirect, etc.)
+      }
+    } catch (error) {
+      // Network or unexpected errors
+      setError("Network error: Please try again later.");
+      console.error("Network Error:", error);
+    } finally {
+      setLoading(false); // End loading
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
@@ -14,7 +66,7 @@ export default function SigninComp() {
         <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2>
 
         {/* Form */}
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium">
@@ -43,12 +95,22 @@ export default function SigninComp() {
             />
           </div>
 
+          {/* Error Message */}
+          {error && (
+            <div className="text-red-500 text-sm mt-2">
+              <p>{error}</p>
+            </div>
+          )}
+
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition"
+            disabled={loading}
+            className={`w-full ${
+              loading ? "bg-gray-500" : "bg-blue-600"
+            } hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition`}
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </button>
 
           {/* Sign Up Link */}
